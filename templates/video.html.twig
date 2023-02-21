@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if app.user is null %}
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #41533B">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('homePage') }}">Disney -</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mynavbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('createUserPage') }}">Inscription</a>
+                            </button>
+                        </li>
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('loginPage') }}">Connexion</a>
+                            </button>
+                        </li>
+
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="text" placeholder="Search">
+                        <button class="btn" style="background-color: #8EB897" type="button">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container my-5">
+            <h1 class="text-center text-white display-4 font-weight-bold">{{ video.title }}</h1>
+            <div class="row">
+                <div class="col-md-5 mb-5">
+                    <img src="{{ asset('asset/'~video.urlPhoto~'' ) }}" class="img-fluid" alt="{{ video.title }}">
+                    <div class="rounded p-3 description-box">
+                        <p class="text-justify mt-3 text-white">{{ video.description }}</p>
+                    </div>
+
+                </div>
+                <div class="col-md-7 mb-5">
+                    <div class="embed-responsive embed-responsive-16by9 h-100 w-100">
+                        <video width="100%" height="50%" controls>
+                            <source src="{{ asset('asset/'~video.urlVideo~'') }}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container my-5">
+            <h1 class="text-center text-white">Commentaires</h1>
+
+            {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        {{ comment.userId.firstName }} - {{ comment.date|date("d/m/Y H:i:s") }}
+                    </div>
+                    <div class="card-body">
+                        {{ comment.content }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+
+    {% else %}
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #41533B">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{{ path('homePage') }}">Disney -</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('logoutPage') }}">Déconnexion</a>
+                            </button>
+                        </li>
+                        <p class="text-white p-1">Vous êtes connecté(e) en tant que {{ app.user.firstName }}</p>
+                    </ul>
+
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="text" placeholder="Search">
+                        <button class="btn" style="background-color: #8EB897" type="button">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container my-5">
+            <h1 class="text-center text-white display-4 font-weight-bold">{{ video.title }}</h1>
+            <div class="row">
+                <div class="col-md-5 mb-5">
+                    <img src="{{ asset('asset/'~video.urlPhoto~'' ) }}" class="img-fluid" alt="{{ video.title }}">
+                    <div class="rounded p-3 description-box">
+                        <p class="text-justify mt-3 text-white">{{ video.description }}</p>
+                    </div>
+
+                </div>
+                <div class="col-md-7 mb-5">
+                    <div class="embed-responsive embed-responsive-16by9 h-100 w-100">
+                        <video width="100%" height="50%" controls>
+                            <source src="{{ asset('asset/'~video.urlVideo~'') }}" type="video/mp4">
+                        </video>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container my-5">
+            <h1 class="text-center text-white">Commentaires</h1>
+
+            <div class="form-group mt-5">
+                {{ form_start(form) }}
+
+                {# contenu du commentaire #}
+                {{ form_widget(form._content, {'attr':{'class':'form-control','rows':'3'}}) }}
+
+                {# boutton pour valider le commentaire #}
+                {{ form_widget(form._save, {'attr':{'class':'btn mt-5', 'style':'background-color: #8EB897'}}) }}
+
+                {{ form_end(form) }}
+            </div>
+
+            {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        {{ comment.userId.firstName }} - {{ comment.date|date("d/m/Y H:i:s") }}
+                    </div>
+                    <div class="card-body">
+                        {{ comment.content }}
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+

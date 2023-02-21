@@ -1,8 +1,106 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
 
-<a href="{{ path('createUserPage') }}">Inscription</a>
-<a href="{{ path('loginPage') }}">Connexion</a>
+{% block body %}
+    {# permet de vérifier si l'utilisateur est connecté ou pas #}
+    {% if app.user is null %}
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #41533B">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="">Disney -</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mynavbar">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('createUserPage') }}">Inscription</a>
+                            </button>
+                        </li>
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('loginPage') }}">Connexion</a>
+                            </button>
+                        </li>
+
+                    </ul>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="text" placeholder="Search">
+                        <button class="btn" style="background-color: #8EB897" type="button">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container my-5">
+            <h1 class="text-white mb-5 ">Val Thorens Holliday's</h1>
+            <div class="row">
+                {% for video in videos %}
+                    <div class="col-md-4 mb-5">
+                        <div class="card h-100">
+                            <a href="{{ path('app_video', {'id': video.id}) }}">
+                                <img src="{{ asset('asset/'~video.urlPhoto~'' ) }}" class="card-img-top"
+                                     alt="{{ asset('asset/'~video.title~'' ) }}">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="color: #276837">{{ video.title }}</h5>
+                                </div>
+                            </a>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+
+
+    {% else %}
+        <nav class="navbar navbar-expand-sm navbar-dark" style="background-color: #41533B">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="">Disney -</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item m-1">
+                            <button class="btn" style="background-color: #8EB897" type="button"><a class="nav-button"
+                                                                                                   href="{{ path('logoutPage') }}">Déconnexion</a>
+                            </button>
+                        </li>
+                        <p class="text-white p-1">Vous êtes connecté(e) en tant que {{ app.user.firstName }}</p>
+                    </ul>
+
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="text" placeholder="Search">
+                        <button class="btn" style="background-color: #8EB897" type="button">Search</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+        <div class="container my-5">
+            <h1 class="text-white mb-5 ">Val Thorens Holliday's</h1>
+            <div class="row">
+                {% for video in videos %}
+                    <div class="col-md-4 mb-5">
+                        <div class="card h-100">
+                            <a href="{{ path('app_video', {'id': video.id}) }}">
+                                <img src="{{ asset('asset/'~video.urlPhoto~'' ) }}" class="card-img-top"
+                                     alt="{{ asset('asset/'~video.urlPhoto~'' ) }}">
+                                <div class="card-body">
+                                    <h5 class="card-title" style="color: #276837">{{ video.title }}</h5>
+                                </div>
+                            </a>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+
+    {% endif %}
 
 {% endblock %}
