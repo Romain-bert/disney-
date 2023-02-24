@@ -26,8 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $role = 'ROLE_USER';
-
+    private ?array $roles = ["USER_ROLE"];
 
     #[ORM\Column(length: 255)]
     private ?string $firstName = null;
@@ -49,14 +48,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
-    public function getRole(): ?string
+    public function getRoles(): array
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(?string $role): void
+    public function setRoles(?string $roles): void
     {
-        $this->role = $role;
+        $this->roles = $roles;
     }
 
     public function getPlainPassword(): ?string
@@ -120,11 +119,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lastName = $lastName;
 
         return $this;
-    }
-
-    public function getRoles(): array
-    {
-        return [$this->role];
     }
 
     public function eraseCredentials()
