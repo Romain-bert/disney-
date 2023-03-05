@@ -29,6 +29,8 @@ class VideoController extends AbstractController
         $comment->setUserId($user);
         $comment->setFilmId($video);
 
+
+
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
@@ -38,10 +40,25 @@ class VideoController extends AbstractController
             $entityManager->flush();
         }
 
+        $favorite = new Favorite();
+        $favorite->setIdUser($user);
+        $favorite->setIdVideo($video);
+
+        $favoriteForm = $this->createForm(FavoriteType::class, $favorite);
+        $favoriteForm->handleRequest($request);
+
+        if ($favoriteForm->isSubmitted() && $favoriteForm->isValid()) {
+            $entityManager->persist($favorite);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Video added to favorites!');
+        }
+
         return $this->render('video.html.twig', [
             'video' => $video,
             'form' => $form->createView(),
             'comments' => $comments,
+            'favoriteForm' => $favoriteForm->createView(),
         ]);
     }
 }

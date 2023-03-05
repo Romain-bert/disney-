@@ -15,7 +15,9 @@ class FavoriteType extends AbstractType
         $builder
             ->add('_favorite', SubmitType::class, [
                 'label' => 'Ajouter aux favoris'
-            ]);
+            ])
+            ->setMethod('POST')
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

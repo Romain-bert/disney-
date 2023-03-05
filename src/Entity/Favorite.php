@@ -47,4 +47,5 @@ class Favorite
 
         return $this;
     }
+
 }

@@ -12,10 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\UserCheckerInterface;
+use Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 
 class UserController extends AbstractController
 {
+
     #[Route('/create', 'createUserPage')]
     public function createUser(EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $hasher): Response
     {
@@ -38,14 +43,13 @@ class UserController extends AbstractController
     }
 
     private $authentificationsUtils;
-
     public function __construct(AuthenticationUtils $authenticationUtils)
     {
-        $this->authentificationsUtils = $authenticationUtils;
+        $this->authentificationsUtils = $authenticationUtils;;
     }
 
     #[Route('/login', 'loginPage')]
-    public function login(Request $request): Response
+    public function login(Request $request, UserCheckerInterface $userChecker, TokenStorageInterface $tokenStorage): Response
     {
         $form = $this->createForm(LoginType::class);
         $form->handleRequest($request);
@@ -58,7 +62,29 @@ class UserController extends AbstractController
             $data = $form->getData();
             $email = $data['_username'];
             $password = $data['_password'];
+
+            // Récupération de l'utilisateur correspondant à l'email
+            $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['email' => $email]);
+
+            // Vérification si l'utilisateur est banni
+            $userChecker->checkPreAuth($user);
+
+            // Vérification si l'utilisateur est banni
+            if ($user->getIsBanned()) {
+                throw new DisabledException('Votre compte est banni.');
+            }
+
+            // Vérification du nom d'utilisateur et du mot de passe
+            if ($this->authentificationsUtils->getLastUsername($user, $password)) {
+                $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+                $this->tokenStorage->setToken($token);
+                return $this->redirectToRoute('homePage');
+            } else {
+                $error = 'Mot de passe incorrect.';
+            }
         }
+
+
         return $this->render('login.html.twig',
             [
                 'form' => $form->createView(),
